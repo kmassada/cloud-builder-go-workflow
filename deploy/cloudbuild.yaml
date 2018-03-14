@@ -1,0 +1,11 @@
+steps:
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: 
+  - 'set'
+  - 'image'
+  - 'deployment'
+  - 'test-go-cb'
+  - 'test-go-cb=gcr.io/$PROJECT_ID/docker/test-go'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-west1-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=phoenet'
