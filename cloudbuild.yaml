@@ -1,0 +1,12 @@
+steps:
+# Pull Binary into docker container and publish it
+- name: 'gcr.io/cloud-builders/gsutil'
+  args: ['cp', 'gs://artifacts-$PROJECT_ID/binaries/test-go/main', '.']
+# Set the permissions
+- name: 'ubuntu'
+  args: ['chmod', '+x', 'main']
+# Build the image
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/docker/test-go', '.' ]
+images:
+- 'gcr.io/$PROJECT_ID/docker/test-go'

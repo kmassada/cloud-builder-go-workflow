@@ -1,0 +1,28 @@
+# Setup repo
+gcloud source repos create test-go
+gcloud source repos list
+git init
+git config credential.helper gcloud.sh
+git remote add google \
+https://source.developers.google.com/p/[PROJECT_ID]/r/[CLOUD_SOURCE_REPOSITORY_NAME]
+git push google master
+
+# setup artifacts locations
+gsutil mb gs://artifacts-[PROJECT_ID]/
+
+## allow your cloud builder to push to GKE
+gcloud iam service-accounts describe $PROJECT_ID@cloudbuild.gserviceaccount.com
+
+PROJECT_ID="$(gcloud projects describe \
+    $(gcloud config get-value core/project -q) --format='get(projectNumber)')"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member=serviceAccount:$PROJECT_ID@cloudbuild.gserviceaccount.com \
+    --role=roles/container.developer
+
+# run builds
+
+## run build first
+## run bootstrap if you've not created a deployment
+## at each iteration run deploy
+gcloud container builds submit --config cloudbuild.yaml ./build
