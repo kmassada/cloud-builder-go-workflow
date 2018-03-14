@@ -1,0 +1,12 @@
+steps:
+# Use git clone.
+- name: gcr.io/cloud-builders/git
+  args: ['clone', 'https://source.developers.google.com/p/$PROJECT_ID/r/test-go.git']
+# Build Binary
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/docker/test-go-build', '.' ]
+# Run build Binary
+- name: 'gcr.io/$PROJECT_ID/docker/test-go-build'
+# upload Binary
+- name: 'gcr.io/cloud-builders/gsutil'
+  args: ['cp', 'main', 'gs://artifacts-$PROJECT_ID/binaries/test-go/main']
